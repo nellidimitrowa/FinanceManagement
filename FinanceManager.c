@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum costType{car, electricity, water, heatingSystem, phone, tv, shopping, food, hobby, rent};
+
+struct Cost {
+	costType type;
+	double price;
+	char *date[10];
+}
+
 char *fileName() {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
