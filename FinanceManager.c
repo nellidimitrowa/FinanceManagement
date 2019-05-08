@@ -3,12 +3,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum costType{car, electricity, water, heatingSystem, phone, tv, shopping, food, hobby, rent};
+#define MAX_TYPE_LEN 15
+#define COST_TYPE_LEN 10
+#define MAX_DATE_LEN 10
+char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
-struct Cost {
-	costType type;
+int findElement(char element[]) {
+	for(int i = 0; i < COST_TYPE_LEN; i++) {
+		if(strcmp(element, costType[i]) == 0) {
+			return(i);
+		}
+	}
+	return(-1);
+}
+
+void addCosts() {
+	char type[MAX_TYPE_LEN];
 	double price;
-	char *date[10];
+	char date[MAX_DATE_LEN];
+
+	printf("Type: ");
+	scanf("%s", type);
+	printf("Price: ");
+	scanf("%lf", &price);
+	printf("Date: ");
+	scanf("%s", date);
+
+	printf("\n");
+	int index = findElement(type);
+	if(index == -1) {
+		printf("Wrong type of the cost.\n");
+	} else {
+		printf("Type: %s\n", costType[index]);
+		printf("Price: %lf\n", price);
+		printf("Date: %s\n", date);
+	}
 }
 
 char *fileName() {
@@ -18,7 +47,7 @@ char *fileName() {
 				"july", "august", "september", "october", "november", "december"};
 	int year = tm.tm_year + 1900;
 
-	char stringYear[32];
+	char stringYear[4];
 	sprintf(stringYear, "%d", year);
 
 	char *filename = malloc(strlen(months[tm.tm_mon]) + 5);
@@ -36,20 +65,16 @@ void saveFile() {
 	strcat(filePath, ".txt");
 	FILE *f = fopen(filePath, "w");
 
-	const char *text = "Write this to the file";
-	fprintf(f, "Some text: %s\n", text);
+	const char *text = "Some text";
+	fprintf(f, "Text: %s", text); 
 
 	fclose(f);
 }
 
-
-// TODO : enterNewCosts()
-// 		: checkFilename()
-
 void choiceAction(int choice) {
 	if (choice == 1) {
 		printf("You chose 1.\n");
-		saveFile();
+		addCosts();
 	} else if (choice == 2) {
 		printf("You chose 2.\n");
 	} else if(choice == 3) {
@@ -74,7 +99,7 @@ void menu() {
 }
 
 
-int main() {
+int main(int argc, char *argv[]) {
 	menu();
 	return 0;
 }
