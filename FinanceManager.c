@@ -6,6 +6,8 @@
 #define MAX_TYPE_LEN 15
 #define COST_TYPE_LEN 10
 #define MAX_DATE_LEN 10
+#define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
+
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 int findElement(char element[]) {
@@ -57,10 +59,9 @@ char *fileName() {
 }
 
 void saveFile() {
-	char *storagePath = "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\";
 	char *filename = fileName();
-	char *filePath = malloc(strlen(storagePath) + strlen(filename) + strlen(".txt") + 1);
-	strcpy(filePath, storagePath);
+	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
+	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
 	strcat(filePath, ".txt");
 	FILE *f = fopen(filePath, "w");
