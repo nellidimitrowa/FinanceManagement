@@ -19,27 +19,37 @@ int findElement(char element[]) {
 	return(-1);
 }
 
-void addCosts() {
+char  *addCost() {
 	char type[MAX_TYPE_LEN];
 	double price;
 	char date[MAX_DATE_LEN];
 
 	printf("Type: ");
 	scanf("%s", type);
+
+	int index = findElement(type);
+	if(index == -1) {
+		printf("Wrong type of the cost.\n");
+		return("fail");
+	} 
+
 	printf("Price: ");
 	scanf("%lf", &price);
 	printf("Date: ");
 	scanf("%s", date);
 
-	printf("\n");
-	int index = findElement(type);
-	if(index == -1) {
-		printf("Wrong type of the cost.\n");
-	} else {
-		printf("Type: %s\n", costType[index]);
-		printf("Price: %lf\n", price);
-		printf("Date: %s\n", date);
-	}
+	char stringPrice[10];
+	sprintf(stringPrice, "%.2lf", price);
+
+	char *cost = malloc(strlen(type) + strlen(stringPrice) + strlen(date) + 1);
+	strcpy(cost, type);
+	strcat(cost, "\n");
+	strcat(cost, stringPrice);
+	strcat(cost, "\n");
+	strcat(cost, date);
+	strcat(cost, "\n");
+
+	return cost;
 }
 
 char *fileName() {
@@ -66,8 +76,8 @@ void saveFile() {
 	strcat(filePath, ".txt");
 	FILE *f = fopen(filePath, "w");
 
-	const char *text = "Some text";
-	fprintf(f, "Text: %s", text); 
+	const char *text = addCost();
+	fprintf(f, "%s", text); 
 
 	fclose(f);
 }
@@ -75,7 +85,7 @@ void saveFile() {
 void choiceAction(int choice) {
 	if (choice == 1) {
 		printf("You chose 1.\n");
-		addCosts();
+		saveFile();
 	} else if (choice == 2) {
 		printf("You chose 2.\n");
 	} else if(choice == 3) {
