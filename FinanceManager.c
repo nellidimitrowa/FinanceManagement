@@ -2,6 +2,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define MAX_TYPE_LEN 15
 #define COST_TYPE_LEN 10
@@ -19,37 +21,41 @@ int findElement(char element[]) {
 	return(-1);
 }
 
-char  *addCost() {
+struct Cost
+{
 	char type[MAX_TYPE_LEN];
 	double price;
 	char date[MAX_DATE_LEN];
+};
 
+char  *addCost() {
+	struct Cost cost;
 	printf("Type: ");
-	scanf("%s", type);
+	scanf("%s", cost.type);
 
-	int index = findElement(type);
+	int index = findElement(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
 		return("fail");
 	} 
 
 	printf("Price: ");
-	scanf("%lf", &price);
+	scanf("%lf", &cost.price);
 	printf("Date: ");
-	scanf("%s", date);
+	scanf("%s", cost.date);
 
 	char stringPrice[10];
-	sprintf(stringPrice, "%.2lf", price);
+	sprintf(stringPrice, "%.2lf", cost.price);
 
-	char *cost = malloc(strlen(type) + strlen(stringPrice) + strlen(date) + 1);
-	strcpy(cost, type);
-	strcat(cost, "\n");
-	strcat(cost, stringPrice);
-	strcat(cost, "\n");
-	strcat(cost, date);
-	strcat(cost, "\n");
+	char *costString = malloc(strlen(cost.type) + strlen(stringPrice) + strlen(cost.date) + 1);
+	strcpy(costString, cost.type);
+	strcat(costString, "\r\n");
+	strcat(costString, stringPrice);
+	strcat(costString, "\r\n");
+	strcat(costString, cost.date);
+	strcat(costString, "\r\n");
 
-	return cost;
+	return costString;
 }
 
 char *fileName() {
@@ -74,12 +80,11 @@ void saveFile() {
 	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
 	strcat(filePath, ".txt");
-	FILE *f = fopen(filePath, "w");
 
-	const char *text = addCost();
-	fprintf(f, "%s", text); 
+	int fileDescriptor = open(filePath, O_RDWR | O_APPEND);
 
-	fclose(f);
+    const char *text = addCost();
+    write(fileDescriptor, text, strlen(text)+1);
 }
 
 void choiceAction(int choice) {
