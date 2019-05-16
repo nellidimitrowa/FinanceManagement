@@ -28,23 +28,27 @@ int findElement(char element[]) {
 	return(-1);
 }
 
-struct Cost addCost() {
+char *addCost() {
 	costStruct cost;
 	printf("Type: ");
 	scanf("%s", cost.type);
 
 	int index = findElement(cost.type);
-	// if(index == -1) {
-	// 	printf("Wrong type of the cost.\n");
-	// 	return;
-	// }
+	if(index == -1) {
+		printf("Wrong type of the cost.\n");
+		return;
+	}
 
 	printf("Price: ");
 	scanf("%lf", &cost.price);
 	printf("Date: ");
 	scanf("%s", cost.date);
 
-	return cost;
+	char *filePath = filePath();
+	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    write(fileDescriptor, &cost, sizeof(costStruct));
+
+	return 1;
 }
 
 
@@ -72,13 +76,6 @@ char *filePath() {
 	strcat(filePath, ".txt");
 
 	return filePath;
-}
-
-void saveFile() {
-	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
-
-    costStruct cost = addCost();
-    write(fileDescriptor, &cost, sizeof(costStruct));
 }
 
 
