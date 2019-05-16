@@ -26,10 +26,44 @@ typedef struct Cost
 	char date[MAX_DATE_LEN];
 }costStruct;
 
+
 int main(int argc, char *argv[]) {
 	menu();
 	return 0;
 }
+
+
+void menu() {
+	int choice;
+	do {
+		printf("\n");
+		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
+		printf("│1.│ Enter the cost of a new month        │\n");
+		printf("│2.│ Review the cost of a previous month  │\n");
+		printf("│3.│ Review the cost of the last 12 months│\n");
+		printf("│4.│ Exit                                 │\n");
+		printf("└──┴──────────────────────────────────────┘\n");
+		printf("Enter choice: ");
+		scanf("%d", &choice);
+		choiceAction(choice);
+	} while(choice != 4);
+}
+
+
+void choiceAction(int choice) {
+	if (choice == 1) {
+		addCost();
+	} else if (choice == 2) {
+		printf("You chose 2.\n");
+	} else if(choice == 3) {
+		printf("You chose 3.\n");
+	} else if(choice == 4) {
+		printf("You chose 4.\n");
+	} else {
+		printf("Wrong operation.\nTry again.\n");
+	}
+}
+
 
 int findElement(char element[]) {
 	for(int i = 0; i < costStructYPE_LEN; i++) {
@@ -39,6 +73,7 @@ int findElement(char element[]) {
 	}
 	return(-1);
 }
+
 
 char *addCost() {
 	costStruct cost;
@@ -82,6 +117,7 @@ char *getFileName() {
     return filename;
 }
 
+
 char *getFilePath() {
 	char *filename = getFileName();
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
@@ -106,34 +142,4 @@ void printAllCostsForCurrentMonth() {
     	printf("%s\n", result.date);
     }
     close(fileDescriptor);
-}
-void choiceAction(int choice) {
-	if (choice == 1) {
-		addCost();
-	} else if (choice == 2) {
-		printf("You chose 2.\n");
-	} else if(choice == 3) {
-		printf("You chose 3.\n");
-	} else if(choice == 4) {
-		printf("You chose 4.\n");
-	} else {
-		printf("Wrong operation.\nTry again.\n");
-	}
-}
-
-
-void menu() {
-	int choice;
-	do {
-		printf("\n");
-		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
-		printf("│1.│ Enter the cost of a new month        │\n");
-		printf("│2.│ Review the cost of a previous month  │\n");
-		printf("│3.│ Review the cost of the last 12 months│\n");
-		printf("│4.│ Exit                                 │\n");
-		printf("└──┴──────────────────────────────────────┘\n");
-		printf("Enter choice: ");
-		scanf("%d", &choice);
-		choiceAction(choice);
-	} while(choice != 4);
 }
