@@ -8,10 +8,10 @@
 #define FALSE 0
 #define TRUE 1
 #define MAX_TYPE_LEN 15
-#define costStructYPE_LEN 10
+#define COST_TYPE_LEN  10
 #define MAX_DATE_LEN 10
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
-char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
+char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 int addCost();
 int findCostByType(char type[]);
@@ -76,9 +76,9 @@ void choiceAction(int choice) {
 
 int addCost() {
 	costStruct cost;
+
 	printf("Type: ");
 	scanf("%s", cost.type);
-
 	int index = findCostByType(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
@@ -87,7 +87,6 @@ int addCost() {
 
 	printf("Price: ");
 	scanf("%lf", &cost.price);
-
 	int checkPrice = priceValidation(cost.price);
 	if(checkPrice == FALSE) {
 		printf("The price cannot be less than zero.\n");
@@ -107,7 +106,7 @@ int addCost() {
 
 
 int findCostByType(char type[]) {
-	for(int i = 0; i < costStructYPE_LEN; i++) {
+	for(int i = 0; i < COST_TYPE_LEN ; i++) {
 		if(strcmp(type, costType[i]) == 0) {
 			return(i);
 		}
@@ -158,10 +157,10 @@ void printAllCostsForCurrentMonth() {
     int fileDescriptor = open(filePath, O_RDONLY);
     int readret;
 
-    printf("\nCOST\tPRICE\tDATE\n");
+    printf("\nCOST\t\tPRICE\t\tDATE\n");
     while((readret = read(fileDescriptor, &result, sizeof(costStruct))) > 0) {
-    	printf("%s\t", result.type);
-    	printf("%.2f\t", result.price);
+    	printf("%s\t\t", result.type);
+    	printf("%.2f\t\t", result.price);
     	printf("%s\n", result.date);
     }
     close(fileDescriptor);
