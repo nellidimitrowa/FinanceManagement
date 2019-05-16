@@ -73,16 +73,6 @@ void choiceAction(int choice) {
 }
 
 
-int findCostByType(char type[]) {
-	for(int i = 0; i < costStructYPE_LEN; i++) {
-		if(strcmp(type, costType[i]) == 0) {
-			return(i);
-		}
-	}
-	return(-1);
-}
-
-
 int addCost() {
 	costStruct cost;
 	printf("Type: ");
@@ -108,6 +98,14 @@ int addCost() {
 }
 
 
+int findCostByType(char type[]) {
+	for(int i = 0; i < costStructYPE_LEN; i++) {
+		if(strcmp(type, costType[i]) == 0) {
+			return(i);
+		}
+	}
+	return(-1);
+}
 
 
 char *getFileName() {
