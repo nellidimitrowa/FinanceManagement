@@ -38,10 +38,12 @@ void menu() {
 	do {
 		printf("\n");
 		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
-		printf("│1.│ Enter the cost of a new month        │\n");
-		printf("│2.│ Review the cost of a previous month  │\n");
-		printf("│3.│ Review the cost of the last 12 months│\n");
-		printf("│4.│ Exit                                 │\n");
+		printf("│1.│ Add cost                             │\n");
+		printf("│2.│ Review the cost of the current month │\n");
+		printf("│3.│ Add cost for the previous month      │\n");
+		printf("│4.│ Review the cost of the previous month│\n");
+		printf("│5.│ Review the cost of the last 12 months│\n");
+		printf("│6.│ Exit                                 │\n");
 		printf("└──┴──────────────────────────────────────┘\n");
 		printf("Enter choice: ");
 		scanf("%d", &choice);
