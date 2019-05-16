@@ -15,6 +15,7 @@ int findElement(char element[]);
 char *addCost();
 char *getFileName();
 char *getFilePath();
+void printAllCostsForCurrentMonth();
 void choiceAction(int choice);
 void menu();
 
@@ -59,6 +60,8 @@ char *addCost() {
 	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
     write(fileDescriptor, &cost, sizeof(costStruct));
 
+    close(fileDescriptor);
+    printAllCostsForCurrentMonth();
 	return 1;
 }
 
@@ -90,9 +93,27 @@ char *getFilePath() {
 }
 
 
+void printAllCostsForCurrentMonth() {
+	costStruct result;
+    int fileDescriptor = open(filePath, O_RDONLY);
+    int readret;
+
+    struct stat fileStat;
+    stat(filePath, &fileStat);
+    // if(stat(argv[1],&fileStat) < 0)    
+    //     return 1;
+    printf("File Size: %d bytes\n", fileStat.st_size);
+    while((readret = read(fileDescriptor, &result, sizeof(costStruct))) > 0) {
+    	printf("%d\n", readret);
+    	printf("TYPE: %s\n", result.type);
+    	printf("PRICE: %.2f\n", result.price);
+    	printf("DATE: %s\n", result.date);
+    }
+    close(fileDescriptor);
+}
 void choiceAction(int choice) {
 	if (choice == 1) {
-		saveFile();
+		addCost();
 	} else if (choice == 2) {
 		printf("You chose 2.\n");
 	} else if(choice == 3) {
@@ -103,6 +124,8 @@ void choiceAction(int choice) {
 		printf("Wrong operation.\nTry again.\n");
 	}
 }
+
+
 void menu() {
 	int choice;
 	do {
