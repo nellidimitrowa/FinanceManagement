@@ -95,6 +95,7 @@ char *getFilePath() {
 
 void printAllCostsForCurrentMonth() {
 	costStruct result;
+	char *filePath = getFilePath();
     int fileDescriptor = open(filePath, O_RDONLY);
     int readret;
 
