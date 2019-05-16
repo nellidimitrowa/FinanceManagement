@@ -6,20 +6,11 @@
 #include <fcntl.h>
 
 #define MAX_TYPE_LEN 15
-#define COST_TYPE_LEN 10
+#define costStructYPE_LEN 10
 #define MAX_DATE_LEN 10
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 
-char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
-
-int findElement(char element[]) {
-	for(int i = 0; i < COST_TYPE_LEN; i++) {
-		if(strcmp(element, costType[i]) == 0) {
-			return(i);
-		}
-	}
-	return(-1);
-}
+char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 struct Cost
 {
@@ -27,6 +18,15 @@ struct Cost
 	double price;
 	char date[MAX_DATE_LEN];
 };
+
+int findElement(char element[]) {
+	for(int i = 0; i < costStructYPE_LEN; i++) {
+		if(strcmp(element, costType[i]) == 0) {
+			return(i);
+		}
+	}
+	return(-1);
+}
 
 char  *addCost() {
 	struct Cost cost;
@@ -87,14 +87,16 @@ void saveFile() {
     write(fileDescriptor, text, strlen(text)+1);
 }
 
+
 void choiceAction(int choice) {
 	if (choice == 1) {
-		printf("You chose 1.\n");
 		saveFile();
 	} else if (choice == 2) {
 		printf("You chose 2.\n");
 	} else if(choice == 3) {
 		printf("You chose 3.\n");
+	} else if(choice == 4) {
+		printf("You chose 4.\n");
 	} else {
 		printf("Wrong operation.\nTry again.\n");
 	}
@@ -103,20 +105,19 @@ void menu() {
 	int choice;
 	do {
 		printf("\n");
-		printf("┌──┬─────────────╢MENU╟─────────────────┐\n");
-		printf("│1.│ Enter the cost of a new month      │\n");
-		printf("│2.│ Review the cost of a previous month│\n");
-		printf("│3.│ Exit                               │\n");
-		printf("└──┴────────────────────────────────────┘\n");
+		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
+		printf("│1.│ Enter the cost of a new month        │\n");
+		printf("│2.│ Review the cost of a previous month  │\n");
+		printf("│3.│ Review the cost of the last 12 months│\n");
+		printf("│4.│ Exit                                 │\n");
+		printf("└──┴──────────────────────────────────────┘\n");
 		printf("Enter choice: ");
 		scanf("%d", &choice);
 		choiceAction(choice);
-	} while(choice != 3);
+	} while(choice != 4);
 }
-
 
 int main(int argc, char *argv[]) {
 	menu();
 	return 0;
 }
-
