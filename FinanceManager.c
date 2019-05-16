@@ -99,10 +99,11 @@ void printAllCostsForCurrentMonth() {
     int fileDescriptor = open(filePath, O_RDONLY);
     int readret;
 
+    printf("\nCOST\tPRICE\tDATE\n");
     while((readret = read(fileDescriptor, &result, sizeof(costStruct))) > 0) {
-    	printf("TYPE: %s\n", result.type);
-    	printf("PRICE: %.2f\n", result.price);
-    	printf("DATE: %s\n", result.date);
+    	printf("%s\t", result.type);
+    	printf("%.2f\t", result.price);
+    	printf("%s\n", result.date);
     }
     close(fileDescriptor);
 }
