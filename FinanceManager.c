@@ -12,12 +12,24 @@
 
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
+int findElement(char element[]);
+char *addCost();
+char *fileName();
+char *filePath();
+void choiceAction(int choice);
+void menu();
+
 typedef struct Cost
 {
 	char type[MAX_TYPE_LEN];
 	double price;
 	char date[MAX_DATE_LEN];
 }costStruct;
+
+int main(int argc, char *argv[]) {
+	menu();
+	return 0;
+}
 
 int findElement(char element[]) {
 	for(int i = 0; i < costStructYPE_LEN; i++) {
@@ -106,9 +118,4 @@ void menu() {
 		scanf("%d", &choice);
 		choiceAction(choice);
 	} while(choice != 4);
-}
-
-int main(int argc, char *argv[]) {
-	menu();
-	return 0;
 }
