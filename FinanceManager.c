@@ -11,7 +11,7 @@
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
-int findElement(char element[]);
+int findCostByType(char type[]);
 char *addCost();
 char *getFileName();
 char *getFilePath();
@@ -71,9 +71,9 @@ void choiceAction(int choice) {
 }
 
 
-int findElement(char element[]) {
+int findCostByType(char type[]) {
 	for(int i = 0; i < costStructYPE_LEN; i++) {
-		if(strcmp(element, costType[i]) == 0) {
+		if(strcmp(type, costType[i]) == 0) {
 			return(i);
 		}
 	}
@@ -86,7 +86,7 @@ char *addCost() {
 	printf("Type: ");
 	scanf("%s", cost.type);
 
-	int index = findElement(cost.type);
+	int index = findCostByType(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
 		return "fail";
