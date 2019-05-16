@@ -14,7 +14,7 @@ char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSyst
 int findElement(char element[]);
 char *addCost();
 char *getFileName();
-char *filePath();
+char *getFilePath();
 void choiceAction(int choice);
 void menu();
 
@@ -55,7 +55,7 @@ char *addCost() {
 	printf("Date: ");
 	scanf("%s", cost.date);
 
-	char *filePath = filePath();
+	char *filePath = getFilePath();
 	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
     write(fileDescriptor, &cost, sizeof(costStruct));
 
@@ -79,7 +79,7 @@ char *getFileName() {
     return filename;
 }
 
-char *filePath() {
+char *getFilePath() {
 	char *filename = getFileName();
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
 	strcpy(filePath, STORAGE_PATH);
