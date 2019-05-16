@@ -9,12 +9,11 @@
 #define costStructYPE_LEN 10
 #define MAX_DATE_LEN 10
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
-
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 int findElement(char element[]);
 char *addCost();
-char *fileName();
+char *getFileName();
 char *filePath();
 void choiceAction(int choice);
 void menu();
@@ -64,7 +63,7 @@ char *addCost() {
 }
 
 
-char *fileName() {
+char *getFileName() {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 	char *months[12] = {"january", "february", "march", "april", "may", "june", 
@@ -81,7 +80,7 @@ char *fileName() {
 }
 
 char *filePath() {
-	char *filename = fileName();
+	char *filename = getFileName();
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
 	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
