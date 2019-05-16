@@ -28,35 +28,25 @@ int findElement(char element[]) {
 	return(-1);
 }
 
-char  *addCost() {
-	struct Cost cost;
+struct Cost addCost() {
+	costStruct cost;
 	printf("Type: ");
 	scanf("%s", cost.type);
 
 	int index = findElement(cost.type);
-	if(index == -1) {
-		printf("Wrong type of the cost.\n");
-		return("fail");
-	} 
+	// if(index == -1) {
+	// 	printf("Wrong type of the cost.\n");
+	// 	return;
+	// }
 
 	printf("Price: ");
 	scanf("%lf", &cost.price);
 	printf("Date: ");
 	scanf("%s", cost.date);
 
-	char stringPrice[10];
-	sprintf(stringPrice, "%.2lf", cost.price);
-
-	char *costString = malloc(strlen(cost.type) + strlen(stringPrice) + strlen(cost.date) + 1);
-	strcpy(costString, cost.type);
-	strcat(costString, "\r\n");
-	strcat(costString, stringPrice);
-	strcat(costString, "\r\n");
-	strcat(costString, cost.date);
-	strcat(costString, "\r\n");
-
-	return costString;
+	return cost;
 }
+
 
 char *fileName() {
 	time_t t = time(NULL);
