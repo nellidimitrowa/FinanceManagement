@@ -56,12 +56,16 @@ void choiceAction(int choice) {
 	if (choice == 1) {
 		addCost();
 	} else if (choice == 2) {
-		printf("You chose 2.\n");
+		printAllCostsForCurrentMonth();
 	} else if(choice == 3) {
 		printf("You chose 3.\n");
 	} else if(choice == 4) {
 		printf("You chose 4.\n");
-	} else {
+	}  else if(choice == 5) {
+		printf("You chose 5.\n");
+	} else if(choice == 6) {
+		printf("You chose 6.\n");
+	}else {
 		printf("Wrong operation.\nTry again.\n");
 	}
 }
