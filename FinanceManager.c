@@ -48,7 +48,7 @@ char *addCost() {
 	int index = findElement(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
-		return;
+		return "fail";
 	}
 
 	printf("Price: ");
@@ -62,7 +62,7 @@ char *addCost() {
 
     close(fileDescriptor);
     printAllCostsForCurrentMonth();
-	return 1;
+	return "ok";
 }
 
 
