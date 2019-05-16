@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define FALSE 0
+#define TRUE 1
 #define MAX_TYPE_LEN 15
 #define costStructYPE_LEN 10
 #define MAX_DATE_LEN 10
@@ -104,6 +106,8 @@ char *addCost() {
     close(fileDescriptor);
 	return "ok";
 }
+
+
 
 
 char *getFileName() {
