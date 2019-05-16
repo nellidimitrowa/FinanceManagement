@@ -13,8 +13,9 @@
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
-int findCostByType(char type[]);
 int addCost();
+int findCostByType(char type[]);
+int priceValidation(double price);
 char *getFileName();
 char *getFilePath();
 void printAllCostsForCurrentMonth();
@@ -86,6 +87,13 @@ int addCost() {
 
 	printf("Price: ");
 	scanf("%lf", &cost.price);
+
+	int checkPrice = priceValidation(cost.price);
+	if(checkPrice == FALSE) {
+		printf("The price cannot be less than zero.\n");
+		return FALSE;
+	}
+
 	printf("Date: ");
 	scanf("%s", cost.date);
 
@@ -105,6 +113,14 @@ int findCostByType(char type[]) {
 		}
 	}
 	return(-1);
+}
+
+
+int priceValidation(double price) {
+	if(price < 0) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 
