@@ -102,7 +102,6 @@ char *addCost() {
     write(fileDescriptor, &cost, sizeof(costStruct));
 
     close(fileDescriptor);
-    printAllCostsForCurrentMonth();
 	return "ok";
 }
 
