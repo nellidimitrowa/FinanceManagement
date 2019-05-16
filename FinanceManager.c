@@ -71,10 +71,10 @@ void saveFile() {
 	strcat(filePath, filename);
 	strcat(filePath, ".txt");
 
-	int fileDescriptor = open(filePath, O_RDWR | O_APPEND);
+	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
 
-    const char *text = addCost();
-    write(fileDescriptor, text, strlen(text)+1);
+    costStruct cost = addCost();
+    write(fileDescriptor, &cost, sizeof(costStruct));
 }
 
 
