@@ -12,12 +12,12 @@
 
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
-struct Cost
+typedef struct Cost
 {
 	char type[MAX_TYPE_LEN];
 	double price;
 	char date[MAX_DATE_LEN];
-};
+}costStruct;
 
 int findElement(char element[]) {
 	for(int i = 0; i < costStructYPE_LEN; i++) {
