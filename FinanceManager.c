@@ -48,7 +48,7 @@ void menu() {
 		printf("Enter choice: ");
 		scanf("%d", &choice);
 		choiceAction(choice);
-	} while(choice != 4);
+	} while(choice != 6);
 }
 
 
