@@ -64,13 +64,17 @@ char *fileName() {
     return filename;
 }
 
-void saveFile() {
+char *filePath() {
 	char *filename = fileName();
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
 	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
 	strcat(filePath, ".txt");
 
+	return filePath;
+}
+
+void saveFile() {
 	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
 
     costStruct cost = addCost();
