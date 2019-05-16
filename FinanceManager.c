@@ -14,7 +14,7 @@
 char *costType[costStructYPE_LEN] = {"car", "electricity", "water", "heatingSystem", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 int findCostByType(char type[]);
-char *addCost();
+int addCost();
 char *getFileName();
 char *getFilePath();
 void printAllCostsForCurrentMonth();
@@ -83,7 +83,7 @@ int findCostByType(char type[]) {
 }
 
 
-char *addCost() {
+int addCost() {
 	costStruct cost;
 	printf("Type: ");
 	scanf("%s", cost.type);
@@ -91,7 +91,7 @@ char *addCost() {
 	int index = findCostByType(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
-		return "fail";
+		return FALSE;
 	}
 
 	printf("Price: ");
@@ -104,7 +104,7 @@ char *addCost() {
     write(fileDescriptor, &cost, sizeof(costStruct));
 
     close(fileDescriptor);
-	return "ok";
+	return TRUE;
 }
 
 
