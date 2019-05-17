@@ -10,17 +10,19 @@
 #define MAX_TYPE_LEN 15
 #define COST_TYPE_LEN  10
 #define MAX_DATE_LEN 10
+#define CURRENT_MONTH 0
+#define PREVIOUS_MONTH -1
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
 int userInput();
-int addCost();
+int addCost(int isPreviousMonth);
 int findCostByType(char type[]);
 int priceValidation(double price);
 int dateValidation(char date[]);
-char *getFileName();
-char *getFilePath();
-void printAllCostsForCurrentMonth();
+char *getFileName(int isPreviousMonth);
+char *getFilePath(int isPreviousMonth);
+void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
 void menu();
 
@@ -59,13 +61,13 @@ void menu() {
 
 void choiceAction(int choice) {
 	if (choice == 1) {
-		addCost();
+		addCost(CURRENT_MONTH);
 	} else if (choice == 2) {
-		printAllCostsForCurrentMonth();
+		printAllCosts(CURRENT_MONTH);
 	} else if(choice == 3) {
-		printf("You chose 3.\n");
+		addCost(PREVIOUS_MONTH);
 	} else if(choice == 4) {
-		printf("You chose 4.\n");
+		printAllCosts(PREVIOUS_MONTH);
 	}  else if(choice == 5) {
 		printf("You chose 5.\n");
 	} else if(choice == 6) {
@@ -76,7 +78,7 @@ void choiceAction(int choice) {
 }
 
 
-int addCost() {
+int addCost(int isPreviousMonth) {
 	costStruct cost;
 
 	printf("Type: ");
@@ -103,7 +105,13 @@ int addCost() {
 		return FALSE;
 	}
 
-	char *filePath = getFilePath();
+	char *filePath;
+	if(isPreviousMonth == PREVIOUS_MONTH) {
+		filePath = getFilePath(PREVIOUS_MONTH);
+	} else {
+		filePath = getFilePath(0);
+	}
+
 	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	write(fileDescriptor, &cost, sizeof(costStruct));
 
@@ -165,7 +173,7 @@ int dateValidation(char date[]) {
 }
 
 
-char *getFileName() {
+char *getFileName(int isPreviousMonth) {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 	char *months[12] = {"january", "february", "march", "april", "may", "june", 
@@ -176,14 +184,23 @@ char *getFileName() {
 	sprintf(stringYear, "%d", year);
 
 	char *filename = malloc(strlen(months[tm.tm_mon]) + 5);
-	strcpy(filename, months[tm.tm_mon]);
+	if (isPreviousMonth == PREVIOUS_MONTH) {
+		strcpy(filename, months[tm.tm_mon-1]);
+	} else {
+		strcpy(filename, months[tm.tm_mon]);
+	}
     strcat(filename, stringYear);
     return filename;
 }
 
 
-char *getFilePath() {
-	char *filename = getFileName();
+char *getFilePath(int isPreviousMonth) {
+	char *filename;
+	if(isPreviousMonth == PREVIOUS_MONTH) {
+		filename = getFileName(PREVIOUS_MONTH);
+	} else {
+		filename = getFileName(CURRENT_MONTH);
+	}
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
 	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
@@ -193,9 +210,14 @@ char *getFilePath() {
 }
 
 
-void printAllCostsForCurrentMonth() {
+void printCosts(int isPreviousMonth) {
 	costStruct result;
-	char *filePath = getFilePath();
+	char *filePath;
+	if (isPreviousMonth == PREVIOUS_MONTH) {
+		filePath = getFilePath(PREVIOUS_MONTH);
+	} else {
+		filePath = getFilePath(CURRENT_MONTH);
+	}
     int fileDescriptor = open(filePath, O_RDONLY);
     int readret;
 
