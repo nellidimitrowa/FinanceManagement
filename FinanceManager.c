@@ -70,7 +70,7 @@ void choiceAction(int choice) {
 		printf("You chose 5.\n");
 	} else if(choice == 6) {
 		printf("You chose 6.\n");
-	}else {
+	} else {
 		printf("Wrong operation.\nTry again.\n");
 	}
 }
@@ -97,7 +97,6 @@ int addCost() {
 
 	printf("Date [dd.mm.yyyy]: ");
 	scanf("%s", cost.date);
-	printf("%d\n", strlen(cost.date));
 	int checkDate = dateValidation(cost.date);
 	if(checkDate == FALSE) {
 		printf("The date format is wrong\n");
@@ -130,26 +129,37 @@ int priceValidation(double price) {
 	return TRUE;
 }
 
+
 int dateValidation(char date[]) {
-	if(strlen(date) > 10 || strlen(date) < 10) {
+	int number = 0;
+	if(strlen(date) < 10 || strlen(date) > 10) {
 		return FALSE;
 	}
 
-	if(date[0] < 1 || date[0] > 3) {
+	number = date[0] - '0';
+	if(number < 0 || number > 3) {
 		return FALSE;
 	}
 
-	if(date[3] < 0 || date[3] > 1) {
+	number = date[3] - '0';
+	if(number < 0 || number > 1) {
 		return FALSE;
 	}
 
-	if(date[4] < 1) {
-		return FALSE;
-	}
-
-	if(date[6] != 2 || date[7] != 0 || date[8] != 1) {
+	number = date[6] - '0';
+	if(number != 2) {
 		return FALSE;
 	} 
+
+	number = date[7] - '0';
+	if (number != 0) {
+		return FALSE;
+	}
+
+	number = date[8] - '0';
+	if (number != 1) {
+		return FALSE;
+	}
 
 	return TRUE;	
 }
