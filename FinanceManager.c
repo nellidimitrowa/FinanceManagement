@@ -13,6 +13,7 @@
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
+int userInput();
 int addCost();
 int findCostByType(char type[]);
 int priceValidation(double price);
@@ -75,7 +76,7 @@ void choiceAction(int choice) {
 }
 
 
-int userInput() {
+int addCost() {
 	costStruct cost;
 
 	printf("Type: ");
@@ -96,25 +97,19 @@ int userInput() {
 
 	printf("Date: ");
 	scanf("%s", cost.date);
+	printf("%d\n", strlen(cost.date));
 	int checkDate = dateValidation(cost.date);
 	if(checkDate == FALSE) {
 		printf("The date format is wrong\n");
 		return FALSE;
 	}
+
+	char *filePath = getFilePath();
+	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	write(fileDescriptor, &cost, sizeof(costStruct));
+
+	close(fileDescriptor);
 	return TRUE;
-}
-
-int addCost() {
-	int userInput = userInput();
-	if(userInput == TRUE) {
-		char *filePath = getFilePath();
-		int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	    write(fileDescriptor, &cost, sizeof(costStruct));
-
-	    close(fileDescriptor);
-	    return TRUE;
-	}
-	return FALSE;
 }
 
 
@@ -137,10 +132,6 @@ int priceValidation(double price) {
 
 int dateValidation(char date[]) {
 	if(strlen(date) > 10 || strlen(date) < 10) {
-		return FALSE;
-	}
-
-	if(date[2] => 0 || date[2] <= 9 || date[5] >= 0 || date[5] <= 9) {
 		return FALSE;
 	}
 
