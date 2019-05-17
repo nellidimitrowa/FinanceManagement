@@ -14,6 +14,8 @@
 #define PREVIOUS_MONTH -1
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
+char *months[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", 
+					"october", "november", "december"};
 
 int userInput();
 int addCost(int isPreviousMonth);
@@ -26,8 +28,7 @@ void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
 void menu();
 
-typedef struct Cost
-{
+typedef struct Cost {
 	char type[MAX_TYPE_LEN];
 	double price;
 	char date[MAX_DATE_LEN];
@@ -176,8 +177,6 @@ int dateValidation(char date[]) {
 char *getFileName(int isPreviousMonth) {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
-	char *months[12] = {"january", "february", "march", "april", "may", "june", 
-				"july", "august", "september", "october", "november", "december"};
 	int year = tm.tm_year + 1900;
 
 	char stringYear[4];
