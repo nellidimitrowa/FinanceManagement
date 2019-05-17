@@ -75,7 +75,7 @@ void choiceAction(int choice) {
 }
 
 
-int addCost() {
+int userInput() {
 	costStruct cost;
 
 	printf("Type: ");
