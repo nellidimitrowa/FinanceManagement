@@ -16,6 +16,7 @@ char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone",
 int addCost();
 int findCostByType(char type[]);
 int priceValidation(double price);
+int dateValidation(char date[]);
 char *getFileName();
 char *getFilePath();
 void printAllCostsForCurrentMonth();
@@ -95,6 +96,11 @@ int addCost() {
 
 	printf("Date: ");
 	scanf("%s", cost.date);
+	int checkDate = dateValidation(cost.date);
+	if(checkDate == FALSE) {
+		printf("The date format is wrong\n");
+		return FALSE;
+	}
 
 	char *filePath = getFilePath();
 	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -120,6 +126,34 @@ int priceValidation(double price) {
 		return FALSE;
 	}
 	return TRUE;
+}
+
+int dateValidation(char date[]) {
+	if(strlen(date) > 10 || strlen(date) < 10) {
+		return FALSE;
+	}
+
+	if(date[2] => 0 || date[2] <= 9 || date[5] >= 0 || date[5] <= 9) {
+		return FALSE;
+	}
+
+	if(date[0] < 1 || date[0] > 3) {
+		return FALSE;
+	}
+
+	if(date[3] < 0 || date[3] > 1) {
+		return FALSE;
+	}
+
+	if(date[4] < 1) {
+		return FALSE;
+	}
+
+	if(date[6] != 2 || date[7] != 0 || date[8] != 1) {
+		return FALSE;
+	} 
+
+	return TRUE;	
 }
 
 
