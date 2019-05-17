@@ -101,13 +101,20 @@ int userInput() {
 		printf("The date format is wrong\n");
 		return FALSE;
 	}
-
-	char *filePath = getFilePath();
-	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    write(fileDescriptor, &cost, sizeof(costStruct));
-
-    close(fileDescriptor);
 	return TRUE;
+}
+
+int addCost() {
+	int userInput = userInput();
+	if(userInput == TRUE) {
+		char *filePath = getFilePath();
+		int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	    write(fileDescriptor, &cost, sizeof(costStruct));
+
+	    close(fileDescriptor);
+	    return TRUE;
+	}
+	return FALSE;
 }
 
 
