@@ -95,7 +95,7 @@ int addCost() {
 		return FALSE;
 	}
 
-	printf("Date: ");
+	printf("Date [dd.mm.yyyy]: ");
 	scanf("%s", cost.date);
 	printf("%d\n", strlen(cost.date));
 	int checkDate = dateValidation(cost.date);
