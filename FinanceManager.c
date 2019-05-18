@@ -44,9 +44,9 @@ void menu() {
 	do {
 		printf("\n");
 		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
-		printf("│1.│ Add cost                             │\n");
+		printf("│1.│ Add cost to the current month        │\n");
 		printf("│2.│ Review the cost of the current month │\n");
-		printf("│3.│ Add cost for the previous month      │\n");
+		printf("│3.│ Add cost to the previous month       │\n");
 		printf("│4.│ Review the cost of the previous month│\n");
 		printf("│5.│ Review the cost of the last 12 months│\n");
 		printf("│6.│ Exit                                 │\n");
@@ -192,7 +192,7 @@ char *getFileName(int isPreviousMonth) {
 
 	char *months[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", 
 					"october", "november", "december"};
-					
+
 	int year = tm.tm_year + 1900;
 
 	char stringYear[4];
