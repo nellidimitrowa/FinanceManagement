@@ -7,6 +7,7 @@
 #include<sys/types.h> 
 #include<sys/wait.h>
 
+
 #define FALSE 0
 #define TRUE 1
 #define MAX_TYPE_LEN 15
@@ -39,14 +40,14 @@ int main(int argc, char *argv[]) {
 	int fd[2];
 	int choice;
 
-	// while(1) {
+
+	while (1) {
 		if (pipe(fd) == -1) {
 			fprintf(stderr, "Pipe failed\n");
 			return 1;
 		}
 
 		pid_t pid = fork();
-
 		if (pid < 0) {
 			fprintf(stderr, "fork Failed\n");
 		} else if (pid > 0) {
@@ -61,10 +62,13 @@ int main(int argc, char *argv[]) {
 
 			read(fd[0], &choice, sizeof(choice));
 			choiceAction(choice);
+			if(choice == 6) {
+				kill(pid, SIGSTOP);
+			}
 
 			close(fd[0]);
 		}
-	// }
+	}
 	return 0;
 }
 
@@ -98,7 +102,7 @@ void choiceAction(int choice) {
 	}  else if(choice == 5) {
 		printf("You chose 5.\n");
 	} else if(choice == 6) {
-		printf("You chose 6.\n");
+		printf("Bye.\n");
 	} else {
 		printf("Wrong operation.\nTry again.\n");
 	}
