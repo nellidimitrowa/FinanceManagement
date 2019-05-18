@@ -12,28 +12,30 @@
 #define TRUE 1
 #define MAX_TYPE_LEN 15
 #define COST_TYPE_LEN  10
-#define MAX_DATE_LEN 10
 #define CURRENT_MONTH 0
 #define PREVIOUS_MONTH -1
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
 
+typedef struct Cost {
+	char type[MAX_TYPE_LEN];
+	double price;
+	time_t date;
+}costStruct;
+
 int userInput();
 int addCost(int isPreviousMonth);
-int findCostByType(char type[]);
+int typeValidation(char type[]);
 int priceValidation(double price);
 int dateValidation(char date[], int isPreviousMonth);
 char *getFileName(int isPreviousMonth);
 char *getFilePath(int isPreviousMonth);
 void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
+costStruct updateCost(costStruct cost, int isPreviousMonth);
+int findCostByType(char type[], int isPreviousMonth);
 int menu();
 
-typedef struct Cost {
-	char type[MAX_TYPE_LEN];
-	double price;
-	char date[MAX_DATE_LEN];
-}costStruct;
 
 
 int main(int argc, char *argv[]) {
@@ -114,7 +116,7 @@ int addCost(int isPreviousMonth) {
 
 	printf("Type: ");
 	scanf("%s", cost.type);
-	int index = findCostByType(cost.type);
+	int index = typeValidation(cost.type);
 	if(index == -1) {
 		printf("Wrong type of the cost.\n");
 		return FALSE;
@@ -136,14 +138,14 @@ int addCost(int isPreviousMonth) {
 		return FALSE;
 	}
 
-	char *filePath;
-	if(isPreviousMonth == PREVIOUS_MONTH) {
-		filePath = getFilePath(PREVIOUS_MONTH);
-	} else {
-		filePath = getFilePath(0);
-	}
+	char *filePath = getFilePath(isPreviousMonth);
 
-	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	int res;
+	if((res = findCostByType(cost.type, isPreviousMonth)) == TRUE) {
+		cost = updateCost(cost, isPreviousMonth);
+	}
+		
+	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	write(fileDescriptor, &cost, sizeof(costStruct));
 
 	close(fileDescriptor);
@@ -151,7 +153,7 @@ int addCost(int isPreviousMonth) {
 }
 
 
-int findCostByType(char type[]) {
+int typeValidation(char type[]) {
 	for(int i = 0; i < COST_TYPE_LEN ; i++) {
 		if(strcmp(type, costType[i]) == 0) {
 			return(i);
@@ -239,12 +241,7 @@ char *getFileName(int isPreviousMonth) {
 
 
 char *getFilePath(int isPreviousMonth) {
-	char *filename;
-	if(isPreviousMonth == PREVIOUS_MONTH) {
-		filename = getFileName(PREVIOUS_MONTH);
-	} else {
-		filename = getFileName(CURRENT_MONTH);
-	}
+	char *filename = getFileName(isPreviousMonth);
 	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
 	strcpy(filePath, STORAGE_PATH);
 	strcat(filePath, filename);
@@ -256,12 +253,7 @@ char *getFilePath(int isPreviousMonth) {
 
 void printCosts(int isPreviousMonth) {
 	costStruct result;
-	char *filePath;
-	if (isPreviousMonth == PREVIOUS_MONTH) {
-		filePath = getFilePath(PREVIOUS_MONTH);
-	} else {
-		filePath = getFilePath(CURRENT_MONTH);
-	}
+	char *filePath = getFilePath(isPreviousMonth);
     int fileDescriptor = open(filePath, O_RDONLY);
     int readret;
 
@@ -272,4 +264,40 @@ void printCosts(int isPreviousMonth) {
     	printf("%s\n", result.date);
     }
     close(fileDescriptor);
+}
+
+costStruct updateCost(costStruct cost, int isPreviousMonth) {
+	printf("%s\n", cost.type);
+	printf("%d\n", cost.price);
+	printf("%s\n", cost.date);
+	costStruct element;
+	char *filePath  = getFilePath(isPreviousMonth);
+    int fileDescriptor = open(filePath, O_RDONLY);
+
+    int readret;
+    while((readret = read(fileDescriptor, &element, sizeof(costStruct))) > 0) {
+    	if (strcmp(cost.type, element.type) == 0) {
+    		element.price = element.price + cost.price;
+    		strcpy(element.date, cost.date);
+    	}
+    }
+    close(fileDescriptor);
+    return element;
+}
+
+int findCostByType(char type[], int isPreviousMonth) {
+	costStruct element;
+
+	char *filePath = getFilePath(isPreviousMonth);
+    int fileDescriptor = open(filePath, O_RDONLY);
+
+
+	int readret;
+    while((readret = read(fileDescriptor, &element, sizeof(costStruct))) > 0) {
+    	if (strcmp(type, element.type) == 0) {
+    		return TRUE;
+    	}
+    }
+    close(fileDescriptor);
+    return FALSE;
 }
