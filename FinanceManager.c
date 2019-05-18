@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include<sys/types.h> 
+#include<sys/wait.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -24,7 +26,7 @@ char *getFileName(int isPreviousMonth);
 char *getFilePath(int isPreviousMonth);
 void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
-void menu();
+int menu();
 
 typedef struct Cost {
 	char type[MAX_TYPE_LEN];
@@ -34,27 +36,53 @@ typedef struct Cost {
 
 
 int main(int argc, char *argv[]) {
-	menu();
+	int fd[2];
+	int choice;
+
+	// while(1) {
+		if (pipe(fd) == -1) {
+			fprintf(stderr, "Pipe failed\n");
+			return 1;
+		}
+
+		pid_t pid = fork();
+
+		if (pid < 0) {
+			fprintf(stderr, "fork Failed\n");
+		} else if (pid > 0) {
+			close(fd[0]);
+			choice = menu();
+			write(fd[1], &choice, sizeof(choice));
+			close(fd[1]);
+
+			wait(NULL);
+		} else {
+			close(fd[1]);
+
+			read(fd[0], &choice, sizeof(choice));
+			choiceAction(choice);
+
+			close(fd[0]);
+		}
+	// }
 	return 0;
 }
 
 
-void menu() {
+int menu() {
 	int choice;
-	do {
-		printf("\n");
-		printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
-		printf("│1.│ Add cost to the current month        │\n");
-		printf("│2.│ Review the cost of the current month │\n");
-		printf("│3.│ Add cost to the previous month       │\n");
-		printf("│4.│ Review the cost of the previous month│\n");
-		printf("│5.│ Review the cost of the last 12 months│\n");
-		printf("│6.│ Exit                                 │\n");
-		printf("└──┴──────────────────────────────────────┘\n");
-		printf("Enter choice: ");
-		scanf("%d", &choice);
-		choiceAction(choice);
-	} while(choice != 6);
+	printf("\n");
+	printf("┌──┬──────────────╢MENU╟──────────────────┐\n");
+	printf("│1.│ Add cost to the current month        │\n");
+	printf("│2.│ Review the cost of the current month │\n");
+	printf("│3.│ Add cost to the previous month       │\n");
+	printf("│4.│ Review the cost of the previous month│\n");
+	printf("│5.│ Review the cost of the last 12 months│\n");
+	printf("│6.│ Exit                                 │\n");
+	printf("└──┴──────────────────────────────────────┘\n");
+	printf("Enter choice: ");
+	scanf("%d", &choice);
+	return choice;
 }
 
 
@@ -150,9 +178,6 @@ int dateValidation(char date[], int isPreviousMonth) {
 	if(number < 0 || number > 3) {
 		return FALSE;
 	}
-
-	number = 
-	printf("%d\n", tm.tm_mday);
 
 	number = date[3] - '0';
 	if(number < 0 || number > 1) {
