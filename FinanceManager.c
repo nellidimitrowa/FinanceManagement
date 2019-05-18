@@ -14,14 +14,12 @@
 #define PREVIOUS_MONTH -1
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
 char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone", "tv", "shopping", "food", "hobby", "rent"};
-char *months[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", 
-					"october", "november", "december"};
 
 int userInput();
 int addCost(int isPreviousMonth);
 int findCostByType(char type[]);
 int priceValidation(double price);
-int dateValidation(char date[]);
+int dateValidation(char date[], int isPreviousMonth);
 char *getFileName(int isPreviousMonth);
 char *getFilePath(int isPreviousMonth);
 void printCosts(int isPreviousMonth);
@@ -64,11 +62,11 @@ void choiceAction(int choice) {
 	if (choice == 1) {
 		addCost(CURRENT_MONTH);
 	} else if (choice == 2) {
-		printAllCosts(CURRENT_MONTH);
+		printCosts(CURRENT_MONTH);
 	} else if(choice == 3) {
 		addCost(PREVIOUS_MONTH);
 	} else if(choice == 4) {
-		printAllCosts(PREVIOUS_MONTH);
+		printCosts(PREVIOUS_MONTH);
 	}  else if(choice == 5) {
 		printf("You chose 5.\n");
 	} else if(choice == 6) {
@@ -100,7 +98,7 @@ int addCost(int isPreviousMonth) {
 
 	printf("Date [dd.mm.yyyy]: ");
 	scanf("%s", cost.date);
-	int checkDate = dateValidation(cost.date);
+	int checkDate = dateValidation(cost.date, isPreviousMonth);
 	if(checkDate == FALSE) {
 		printf("The date format is wrong\n");
 		return FALSE;
@@ -139,8 +137,11 @@ int priceValidation(double price) {
 }
 
 
-int dateValidation(char date[]) {
+int dateValidation(char date[], int isPreviousMonth) {
 	int number = 0;
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+
 	if(strlen(date) < 10 || strlen(date) > 10) {
 		return FALSE;
 	}
@@ -150,8 +151,17 @@ int dateValidation(char date[]) {
 		return FALSE;
 	}
 
+	number = 
+	printf("%d\n", tm.tm_mday);
+
 	number = date[3] - '0';
 	if(number < 0 || number > 1) {
+		return FALSE;
+	}
+
+	number = date[4] - '0';
+	if((isPreviousMonth == CURRENT_MONTH && number != tm.tm_mon+1) || 
+		(isPreviousMonth == PREVIOUS_MONTH && number != tm.tm_mon)) {
 		return FALSE;
 	}
 
@@ -172,11 +182,17 @@ int dateValidation(char date[]) {
 
 	return TRUE;	
 }
+// 1 7 . 0 5 . 2 0 1 9
+// 0 1 2 3 4 5 6 7 8 9
 
 
 char *getFileName(int isPreviousMonth) {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
+
+	char *months[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", 
+					"october", "november", "december"};
+					
 	int year = tm.tm_year + 1900;
 
 	char stringYear[4];
