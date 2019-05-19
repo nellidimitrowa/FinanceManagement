@@ -245,12 +245,6 @@ char *getFileName(int isPreviousMonth) {
     return filename;
 }
 
-// char *getFileName(int isPreviousMonth) {
-// 	char *filename = malloc(10);
-// 	filename = "march2019";
-// 	return filename;
-// }
-
 void deleteFile(char month[], int year) {
 	char stringLastYear[4];
 	sprintf(stringLastYear, "%d", year);
