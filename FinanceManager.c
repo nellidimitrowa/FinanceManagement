@@ -12,6 +12,7 @@
 #define TRUE 1
 #define MAX_TYPE_LEN 15
 #define COST_TYPE_LEN  10
+#define MAX_DATE_LEN 10
 #define CURRENT_MONTH 0
 #define PREVIOUS_MONTH -1
 #define STORAGE_PATH "D:\\WORD\\UNI\\semester6\\SPr\\TASK\\FinanceManager\\FinanceManagement\\Storage\\"
@@ -20,7 +21,7 @@ char *costType[COST_TYPE_LEN] = {"car", "electricity", "water", "pets", "phone",
 typedef struct Cost {
 	char type[MAX_TYPE_LEN];
 	double price;
-	time_t date;
+	char date[MAX_DATE_LEN];
 }costStruct;
 
 int userInput();
@@ -32,7 +33,7 @@ char *getFileName(int isPreviousMonth);
 char *getFilePath(int isPreviousMonth);
 void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
-costStruct updateCost(costStruct cost, int isPreviousMonth);
+void updateCost(costStruct cost, int isPreviousMonth);
 int findCostByType(char type[], int isPreviousMonth);
 int menu();
 
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
 			read(fd[0], &choice, sizeof(choice));
 			choiceAction(choice);
 			if(choice == 6) {
-				kill(pid, SIGSTOP);
+				kill(pid, SIGKILL);
 			}
 
 			close(fd[0]);
@@ -139,14 +140,15 @@ int addCost(int isPreviousMonth) {
 	}
 
 	char *filePath = getFilePath(isPreviousMonth);
+	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0644);
 
 	int res;
 	if((res = findCostByType(cost.type, isPreviousMonth)) == TRUE) {
-		cost = updateCost(cost, isPreviousMonth);
+		printf("HERE I AM!\n");
+		updateCost(cost, isPreviousMonth);
+	} else {
+		write(fileDescriptor, &cost, sizeof(costStruct));
 	}
-		
-	int fileDescriptor = open(filePath, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	write(fileDescriptor, &cost, sizeof(costStruct));
 
 	close(fileDescriptor);
 	return TRUE;
@@ -213,8 +215,6 @@ int dateValidation(char date[], int isPreviousMonth) {
 
 	return TRUE;	
 }
-// 1 7 . 0 5 . 2 0 1 9
-// 0 1 2 3 4 5 6 7 8 9
 
 
 char *getFileName(int isPreviousMonth) {
@@ -266,13 +266,15 @@ void printCosts(int isPreviousMonth) {
     close(fileDescriptor);
 }
 
-costStruct updateCost(costStruct cost, int isPreviousMonth) {
-	printf("%s\n", cost.type);
-	printf("%d\n", cost.price);
-	printf("%s\n", cost.date);
+void updateCost(costStruct cost, int isPreviousMonth) {
 	costStruct element;
+    int found;
 	char *filePath  = getFilePath(isPreviousMonth);
     int fileDescriptor = open(filePath, O_RDONLY);
+    char *tmpFilePath = malloc(strlen(STORAGE_PATH) + strlen("tmp.txt") + 1);
+    strcpy(tmpFilePath, STORAGE_PATH);
+    strcat(tmpFilePath, "tmp.txt");
+    int tmpFileDescriptor = open(tmpFilePath, O_WRONLY | O_CREAT);
 
     int readret;
     while((readret = read(fileDescriptor, &element, sizeof(costStruct))) > 0) {
@@ -280,9 +282,12 @@ costStruct updateCost(costStruct cost, int isPreviousMonth) {
     		element.price = element.price + cost.price;
     		strcpy(element.date, cost.date);
     	}
+    	write(tmpFileDescriptor, &element, sizeof(costStruct));
     }
     close(fileDescriptor);
-    return element;
+    close(tmpFileDescriptor);
+    remove(filePath);
+    rename(tmpFilePath, filePath);
 }
 
 int findCostByType(char type[], int isPreviousMonth) {
