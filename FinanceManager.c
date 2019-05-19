@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include<sys/types.h> 
 #include<sys/wait.h>
+#include <dirent.h>
 
 
 #define FALSE 0
@@ -37,6 +38,7 @@ int updateCost(costStruct cost, int isPreviousMonth);
 int findCostByType(char type[], int isPreviousMonth);
 void totalPrice(costStruct cost, char *filePath);
 void maxPrice(costStruct cost, char *filePath);
+void deleteFile(char month[], int year);
 int menu();
 
 
@@ -106,7 +108,7 @@ void choiceAction(int choice) {
 	} else if(choice == 4) {
 		printCosts(PREVIOUS_MONTH);
 	}  else if(choice == 5) {
-		printf("You chose 5.\n");
+		//
 	} else if(choice == 6) {
 		printf("Bye.\n");
 	} else {
@@ -197,12 +199,6 @@ int dateValidation(char date[], int isPreviousMonth) {
 		return FALSE;
 	}
 
-	number = date[4] - '0';
-	if((isPreviousMonth == CURRENT_MONTH && number != tm.tm_mon+1) || 
-		(isPreviousMonth == PREVIOUS_MONTH && number != tm.tm_mon)) {
-		return FALSE;
-	}
-
 	number = date[6] - '0';
 	if(number != 2) {
 		return FALSE;
@@ -230,9 +226,12 @@ char *getFileName(int isPreviousMonth) {
 					"october", "november", "december"};
 
 	int year = tm.tm_year + 1900;
+	int lastyear = tm.tm_year + 1900 -1;
 
 	char stringYear[4];
 	sprintf(stringYear, "%d", year);
+	
+	deleteFile(months[tm.tm_mon], lastyear);
 
 	char *filename = malloc(strlen(months[tm.tm_mon]) + 5);
 	if (isPreviousMonth == PREVIOUS_MONTH) {
@@ -240,10 +239,24 @@ char *getFileName(int isPreviousMonth) {
 	} else {
 		strcpy(filename, months[tm.tm_mon]);
 	}
-    strcat(filename, stringYear);
+	strcat(filename, stringYear);
     return filename;
 }
 
+void deleteFile(char month[], int year) {
+	char stringLastYear[4];
+	sprintf(stringLastYear, "%d", year);
+
+	char *filename = malloc(strlen(month) + 5);
+	strcpy(filename, month);
+	strcat(filename, stringLastYear);
+
+	char *lastYearPath = malloc(strlen(STORAGE_PATH) + strlen(filename) + strlen(".txt") + 1);
+	strcpy(lastYearPath, STORAGE_PATH);
+	strcat(lastYearPath, filename);
+	strcat(lastYearPath, ".txt");
+	remove(lastYearPath);
+}
 
 char *getFilePath(int isPreviousMonth) {
 	char *filename = getFileName(isPreviousMonth);
