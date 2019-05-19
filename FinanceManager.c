@@ -35,7 +35,8 @@ void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
 void updateCost(costStruct cost, int isPreviousMonth);
 int findCostByType(char type[], int isPreviousMonth);
-double totalPrice(costStruct cost, char *filePath);
+void totalPrice(costStruct cost, char *filePath);
+void maxPrice(costStruct cost, char *filePath);
 int menu();
 
 
@@ -264,7 +265,8 @@ void printCosts(int isPreviousMonth) {
     	printf("%.2f\t\t", result.price);
     	printf("%s\n", result.date);
     }
-    printf("Total price for this month: %.2lf\n", totalPrice(result, filePath));
+    totalPrice(result, filePath);
+    maxPrice(result, filePath);
     close(fileDescriptor);
 }
 
@@ -309,7 +311,7 @@ int findCostByType(char type[], int isPreviousMonth) {
     return FALSE;
 }
 
-double totalPrice(costStruct cost, char *filePath) {
+void totalPrice(costStruct cost, char *filePath) {
 	double sum = 0;
     int fileDescriptor = open(filePath, O_RDONLY);
 
@@ -317,6 +319,20 @@ double totalPrice(costStruct cost, char *filePath) {
     while((readret = read(fileDescriptor, &cost, sizeof(costStruct))) > 0) {
     	sum = sum + cost.price;
     }
+    printf("This month your total pay: %.2lf lv\n", sum);
+}
 
-    return sum;
+void maxPrice(costStruct cost, char *filePath) {
+	double max = 0;
+	char type[MAX_TYPE_LEN];
+	int fileDescriptor = open(filePath, O_RDONLY);
+
+	int readret;
+    while((readret = read(fileDescriptor, &cost, sizeof(costStruct))) > 0) {
+    	if(cost.price > max) {
+    		max = cost.price;
+    		strcpy(type, cost.type);
+    	}
+    }
+    printf("You gave the most money for the: %s - %.2lf lv\n", type, max);
 }
