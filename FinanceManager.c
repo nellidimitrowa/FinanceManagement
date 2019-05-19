@@ -33,7 +33,7 @@ char *getFileName(int isPreviousMonth);
 char *getFilePath(int isPreviousMonth);
 void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
-void updateCost(costStruct cost, int isPreviousMonth);
+int updateCost(costStruct cost, int isPreviousMonth);
 int findCostByType(char type[], int isPreviousMonth);
 void totalPrice(costStruct cost, char *filePath);
 void maxPrice(costStruct cost, char *filePath);
@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
 		pid_t pid = fork();
 		if (pid < 0) {
 			fprintf(stderr, "fork Failed\n");
+			return 1;
 		} else if (pid > 0) {
 			close(fd[0]);
 			choice = menu();
@@ -146,10 +147,12 @@ int addCost(int isPreviousMonth) {
 
 	int res;
 	if((res = findCostByType(cost.type, isPreviousMonth)) == TRUE) {
-		printf("HERE I AM!\n");
 		updateCost(cost, isPreviousMonth);
 	} else {
-		write(fileDescriptor, &cost, sizeof(costStruct));
+		if(write(fileDescriptor, &cost, sizeof(costStruct)) < 0) {
+			printf("Something went wring.\n");
+			return FALSE;
+		}
 	}
 
 	close(fileDescriptor);
@@ -270,7 +273,7 @@ void printCosts(int isPreviousMonth) {
     close(fileDescriptor);
 }
 
-void updateCost(costStruct cost, int isPreviousMonth) {
+int updateCost(costStruct cost, int isPreviousMonth) {
 	costStruct element;
     int found;
 	char *filePath  = getFilePath(isPreviousMonth);
@@ -286,12 +289,16 @@ void updateCost(costStruct cost, int isPreviousMonth) {
     		element.price = element.price + cost.price;
     		strcpy(element.date, cost.date);
     	}
-    	write(tmpFileDescriptor, &element, sizeof(costStruct));
+    	if(write(tmpFileDescriptor, &element, sizeof(costStruct)) < 0) {
+    		printf("Something went wrong;\n");
+    		return FALSE;
+    	}
     }
     close(fileDescriptor);
     close(tmpFileDescriptor);
     remove(filePath);
     rename(tmpFilePath, filePath);
+    return TRUE;
 }
 
 int findCostByType(char type[], int isPreviousMonth) {
