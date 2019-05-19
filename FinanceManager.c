@@ -25,6 +25,7 @@ typedef struct Cost {
 	char date[MAX_DATE_LEN];
 }costStruct;
 
+
 int userInput();
 int addCost(int isPreviousMonth);
 int typeValidation(char type[]);
@@ -39,6 +40,7 @@ int findCostByType(char type[], int isPreviousMonth);
 void totalPrice(costStruct cost, char *filePath);
 void maxPrice(costStruct cost, char *filePath);
 void deleteFile(char month[], int year);
+void printAllCosts();
 int menu();
 
 
@@ -108,7 +110,7 @@ void choiceAction(int choice) {
 	} else if(choice == 4) {
 		printCosts(PREVIOUS_MONTH);
 	}  else if(choice == 5) {
-		//
+		printAllCosts();
 	} else if(choice == 6) {
 		printf("Bye.\n");
 	} else {
@@ -243,6 +245,7 @@ char *getFileName(int isPreviousMonth) {
     return filename;
 }
 
+
 void deleteFile(char month[], int year) {
 	char stringLastYear[4];
 	sprintf(stringLastYear, "%d", year);
@@ -257,6 +260,7 @@ void deleteFile(char month[], int year) {
 	strcat(lastYearPath, ".txt");
 	remove(lastYearPath);
 }
+
 
 char *getFilePath(int isPreviousMonth) {
 	char *filename = getFileName(isPreviousMonth);
@@ -286,6 +290,7 @@ void printCosts(int isPreviousMonth) {
     close(fileDescriptor);
 }
 
+
 int updateCost(costStruct cost, int isPreviousMonth) {
 	costStruct element;
     int found;
@@ -314,6 +319,7 @@ int updateCost(costStruct cost, int isPreviousMonth) {
     return TRUE;
 }
 
+
 int findCostByType(char type[], int isPreviousMonth) {
 	costStruct element;
 
@@ -331,6 +337,7 @@ int findCostByType(char type[], int isPreviousMonth) {
     return FALSE;
 }
 
+
 void totalPrice(costStruct cost, char *filePath) {
 	double sum = 0;
     int fileDescriptor = open(filePath, O_RDONLY);
@@ -341,6 +348,7 @@ void totalPrice(costStruct cost, char *filePath) {
     }
     printf("This month your total pay: %.2lf lv\n", sum);
 }
+
 
 void maxPrice(costStruct cost, char *filePath) {
 	double max = 0;
@@ -355,4 +363,32 @@ void maxPrice(costStruct cost, char *filePath) {
     	}
     }
     printf("You gave the most money for the: %s - %.2lf lv\n", type, max);
+}
+
+
+void printAllCosts() {
+	int fileCount = 0;
+	DIR *dir;
+	struct dirent *entry;
+	costStruct cost;
+	int readret;
+	dir = opendir(STORAGE_PATH);
+
+	while ((entry = readdir(dir)) != NULL) {
+		printf("\n%s", entry->d_name);
+		printf("\nCOST\t\tPRICE\t\tDATE\n");
+    	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(entry->d_name) + 1);
+    	strcpy(filePath, STORAGE_PATH);
+    	strcat(filePath, entry->d_name);
+	    int fileDescriptor = open(filePath, O_RDONLY);
+	    while((readret = read(fileDescriptor, &cost, sizeof(costStruct))) > 0) {
+	    	printf("%s\t\t", cost.type);
+	    	printf("%.2f\t\t", cost.price);
+	    	printf("%s\n", cost.date);
+    	}
+    	totalPrice(cost, filePath);
+	    maxPrice(cost, filePath);
+	    close(fileDescriptor);
+	}
+	closedir(dir);
 }
