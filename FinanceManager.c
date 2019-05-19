@@ -375,7 +375,7 @@ void printAllCosts() {
 	dir = opendir(STORAGE_PATH);
 
 	while ((entry = readdir(dir)) != NULL) {
-		if(strcmp(entry->d_name, ".") != 0 || strcmp(entry->d_name, "..") != 0) {
+		if(strcmp(entry->d_name, ".") > 0 || strcmp(entry->d_name, "..") > 0) {
 			printf("\n%s", entry->d_name);
 			printf("\nCOST\t\tPRICE\t\tDATE\n");
 	    	char *filePath = malloc(strlen(STORAGE_PATH) + strlen(entry->d_name) + 1);
