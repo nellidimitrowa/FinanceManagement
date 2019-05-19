@@ -35,6 +35,7 @@ void printCosts(int isPreviousMonth);
 void choiceAction(int choice);
 void updateCost(costStruct cost, int isPreviousMonth);
 int findCostByType(char type[], int isPreviousMonth);
+double totalPrice(costStruct cost, char *filePath);
 int menu();
 
 
@@ -263,6 +264,7 @@ void printCosts(int isPreviousMonth) {
     	printf("%.2f\t\t", result.price);
     	printf("%s\n", result.date);
     }
+    printf("Total price for this month: %.2lf\n", totalPrice(result, filePath));
     close(fileDescriptor);
 }
 
@@ -305,4 +307,16 @@ int findCostByType(char type[], int isPreviousMonth) {
     }
     close(fileDescriptor);
     return FALSE;
+}
+
+double totalPrice(costStruct cost, char *filePath) {
+	double sum = 0;
+    int fileDescriptor = open(filePath, O_RDONLY);
+
+    int readret;
+    while((readret = read(fileDescriptor, &cost, sizeof(costStruct))) > 0) {
+    	sum = sum + cost.price;
+    }
+
+    return sum;
 }
